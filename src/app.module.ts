@@ -1,9 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { dataSourceOpt } from 'config/data-source';
+import { TodosListModule } from './modules/todos-list/todos-list.module';
 
 @Module({
-  imports: [],
+  imports: [
+    TypeOrmModule.forRoot({
+      ...dataSourceOpt,
+      autoLoadEntities: true
+    }),
+    TodosListModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
