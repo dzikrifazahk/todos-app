@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { TodosListService } from './todos-list.service';
 import { CreateTodosListDto } from './dto/create-todos-list.dto';
 import { UpdateTodosListStatusDto } from './dto/update-todos-list.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { BaseDto } from 'src/common/base.dto';
 
 @ApiTags('Todo List') //tambahkan api tags untuk swagger
@@ -26,12 +26,13 @@ export class TodosListController {
     summary: 'Ini Api Untuk Mengambil Semua Data Todo',
     description: 'Gunakan Api ini untuk mengambil semua data todo anda',
   })
-  async findAll() {
-    const data = await this.todosListService.findAll();
+  @ApiQuery({ name: 'keyOrder', enum: ['ASC', 'DESC'], required: false })
+  async findAll(@Query('keyOrder') keyOrder?: 'ASC' | 'DESC') {
+    const data = await this.todosListService.findAll(keyOrder);
 
-    return new BaseDto('Berhasil Mengambil Semua Data', data);
+    return { message: 'Berhasil Mengambil Semua Data', data };
   }
-
+  
   @Get(':id')
   @ApiOperation({
     summary: 'Ini Api Untuk Mengambil Data Todo Berdasarkan Id',
@@ -64,4 +65,5 @@ export class TodosListController {
     
     return new BaseDto('Berhasil Menghapus Data', removeData);
   }
+
 }

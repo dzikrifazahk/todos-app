@@ -23,15 +23,26 @@ export class TodosListService {
     return createData;
   }
 
-  async findAll() {
-    const getAllData = await this.todosListRepository.find();
+  async findAll(keyOrder?: 'ASC' | 'DESC') {
+    let getAllData;
 
-    if(!getAllData){
-      throw new Error('Error Get All Data')
+    if (keyOrder) {
+        getAllData = await this.todosListRepository.find({
+            order: {
+                createdAt: keyOrder
+            }
+        });
+    } else {
+        getAllData = await this.todosListRepository.find();
+    }
+
+    if (!getAllData) {
+        throw new Error('Error Get All Data With Sort');
     }
 
     return getAllData;
-  }
+}
+
 
   async findOne(id: string) {
     
@@ -78,5 +89,8 @@ export class TodosListService {
     const removeIt = await this.todosListRepository.remove(findData);
 
     return removeIt;
+  }
+
+  async sortBy(key: number){
   }
 }
